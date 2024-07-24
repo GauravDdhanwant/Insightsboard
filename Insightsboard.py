@@ -2,6 +2,11 @@ import streamlit as st
 from PIL import Image
 import io
 import google.generativeai as genai
+import requests
+from io import BytesIO
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 
 # Function to configure the API key
 def configure_api(api_key):
@@ -201,6 +206,21 @@ def final_setup(images, question):
     image_output = get_image_info(image_prompts, question, task_type_output)
     return image_output
 
+def take_screenshot(url):
+    # Configure Selenium WebDriver
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_service = Service('/path/to/chromedriver')  # Update this path
+    driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
+
+    # Open the URL and take a screenshot
+    driver.get(url)
+    screenshot = driver.get_screenshot_as_png()
+    driver.quit()
+    return Image.open(BytesIO(screenshot))
+
 # Streamlit app
 st.set_page_config(page_title="InsightsBoard", page_icon=":bar_chart:", layout="wide")
 
@@ -223,9 +243,13 @@ st.markdown("""
         border-radius: 4px;
         border: none;
     }
+    .stImage {
+        max-width: 100%;
+    }
     </style>
     """, unsafe_allow_html=True)
 
+st.sidebar.image("https://www.nicesoftwaresolutions.com/logo.png", width=150)
 st.sidebar.title("InsightsBoard")
 
 api_key = st.sidebar.text_input("Enter your API Key", type="password")
@@ -234,21 +258,27 @@ if api_key:
     configure_api(api_key)
 
     uploaded_files = st.sidebar.file_uploader("Upload Chart Images", type=["jpg", "jpeg", "png"], accept_multiple_files=True)
+    dashboard_url = st.sidebar.text_input("Enter Dashboard URL (optional)")
     question = st.sidebar.text_input("Enter Your Question Here")
 
     if st.sidebar.button("Analyze"):
-        if uploaded_files and question:
-            with st.spinner("Processing..."):
-                result = final_setup(uploaded_files, question)
-                col1, col2 = st.columns([1, 4])
-                with col1:
-                    st.image(uploaded_files[0], use_column_width=True)
-                with col2:
+        col1, col2 = st.columns([3, 6])
+        
+        with col1:
+            if uploaded_files:
+                uploaded_image = Image.open(uploaded_files[0])
+                st.image(uploaded_image, use_column_width=True)
+        
+        with col2:
+            if dashboard_url:
+                screenshot = take_screenshot(dashboard_url)
+                st.image(screenshot, caption="Screenshot of Dashboard", use_column_width=True)
+
+            if uploaded_files and question:
+                with st.spinner("Processing..."):
+                    result = final_setup(uploaded_files, question)
                     st.write(result)
-        else:
-            st.warning("Please upload images and enter a question.")
+            else:
+                st.warning("Please upload images and enter a question.")
 else:
     st.warning("Please enter your API Key.")
-
-# Add logo from the website
-st.sidebar.image("https://www.nicesoftwaresolutions.com/logo.png", width=150)
