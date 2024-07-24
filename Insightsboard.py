@@ -202,7 +202,31 @@ def final_setup(images, question):
     return image_output
 
 # Streamlit app
-st.title("Chart Analyzer")
+st.set_page_config(page_title="InsightsBoard", page_icon=":bar_chart:", layout="wide")
+
+# Apply the theme
+st.markdown("""
+    <style>
+    .reportview-container {
+        background-color: #f5f5f5;
+    }
+    .sidebar .sidebar-content {
+        background-color: #ffffff;
+    }
+    .sidebar .sidebar-content .sidebar-header {
+        background-color: #1e3a8a;
+        color: #ffffff;
+    }
+    .stButton>button {
+        background-color: #1e3a8a;
+        color: #ffffff;
+        border-radius: 4px;
+        border: none;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+st.sidebar.title("InsightsBoard")
 
 api_key = st.sidebar.text_input("Enter your API Key", type="password")
 
@@ -216,8 +240,15 @@ if api_key:
         if uploaded_files and question:
             with st.spinner("Processing..."):
                 result = final_setup(uploaded_files, question)
-                st.write(result)
+                col1, col2 = st.columns([1, 4])
+                with col1:
+                    st.image(uploaded_files[0], use_column_width=True)
+                with col2:
+                    st.write(result)
         else:
             st.warning("Please upload images and enter a question.")
 else:
     st.warning("Please enter your API Key.")
+
+# Add logo from the website
+st.sidebar.image("https://www.nicesoftwaresolutions.com/logo.png", width=150)
