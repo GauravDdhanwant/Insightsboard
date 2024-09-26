@@ -232,11 +232,11 @@ st.markdown("""
         background-color: #f5f5f5;
     }
     .sidebar .sidebar-content {
-        background-color: #000000;
+        background-color: #212f3d;
     }
     .sidebar .sidebar-content .sidebar-header {
         background-color: #1e3a8a;
-        color: #ffffff;
+        color: #212f3d;
     }
     .stButton>button {
         background-color: #1e3a8a;
