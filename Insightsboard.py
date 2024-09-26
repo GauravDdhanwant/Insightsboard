@@ -7,6 +7,7 @@ from io import BytesIO
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+import os
 
 # Function to configure the API key
 def configure_api(api_key):
@@ -250,6 +251,10 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 st.sidebar.image("Nice Icon 3.png", width=150)
+if os.path.exists(image_path):
+    st.sidebar.image(image_path, width=150)
+else:
+    st.sidebar.warning(f"Image not found: {image_path}")
 st.sidebar.title("InsightsBoard")
 
 api_key = st.sidebar.text_input("Enter your API Key", type="password")
