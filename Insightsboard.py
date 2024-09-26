@@ -251,10 +251,6 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 st.sidebar.image("Nice Icon 3.png", width=150)
-if os.path.exists(image_path):
-    st.sidebar.image(image_path, width=150)
-else:
-    st.sidebar.warning(f"Image not found: {image_path}")
 st.sidebar.title("InsightsBoard")
 
 api_key = st.sidebar.text_input("Enter your API Key", type="password")
