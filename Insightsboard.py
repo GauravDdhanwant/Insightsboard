@@ -250,7 +250,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-st.sidebar.image("Nice Icon 3.png", width=150)
+st.sidebar.image("Nice Icon.png", width=150)
 st.sidebar.title("InsightsBoard")
 
 api_key = st.sidebar.text_input("Enter your API Key", type="password")
