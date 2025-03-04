@@ -268,12 +268,12 @@ if api_key:
         with col1:
             if uploaded_files:
                 uploaded_image = Image.open(uploaded_files[0])
-                st.image(uploaded_image, use_column_width=True)
+                st.image(uploaded_image, use_container_width=True)
         
         with col2:
             if dashboard_url:
                 screenshot = take_screenshot(dashboard_url)
-                st.image(screenshot, caption="Screenshot of Dashboard", use_column_width=True)
+                st.image(screenshot, caption="Screenshot of Dashboard", use_container_width=True)
 
             if uploaded_files and question:
                 with st.spinner("Processing..."):
