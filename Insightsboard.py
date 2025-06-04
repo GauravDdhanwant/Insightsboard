@@ -2,7 +2,6 @@ import streamlit as st
 from PIL import Image
 import io
 import google.generativeai as genai
-import requests
 from io import BytesIO
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -207,20 +206,25 @@ def final_setup(images, question):
     image_output = get_image_info(image_prompts, question, task_type_output)
     return image_output
 
-def take_screenshot(url):
-    # Configure Selenium WebDriver
+def take_screenshot(url, driver_path=None):
+    """Capture a screenshot of the given URL using Chrome."""
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--no-sandbox")
-    chrome_service = Service('/path/to/chromedriver')  # Update this path
+
+    if driver_path is None:
+        driver_path = os.environ.get("CHROMEDRIVER_PATH", "chromedriver")
+
+    chrome_service = Service(driver_path)
     driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
 
-    # Open the URL and take a screenshot
-    driver.get(url)
-    screenshot = driver.get_screenshot_as_png()
-    driver.quit()
-    return Image.open(BytesIO(screenshot))
+    try:
+        driver.get(url)
+        screenshot = driver.get_screenshot_as_png()
+        return Image.open(BytesIO(screenshot))
+    finally:
+        driver.quit()
 
 # Streamlit app
 st.set_page_config(page_title="InsightsBoard", page_icon=":bar_chart:", layout="wide")
